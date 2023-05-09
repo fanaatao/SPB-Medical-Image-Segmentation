@@ -47,4 +47,25 @@ class ConvRNN(nn.Module):
             forward_cell_list = []
             backward_cell_list = []
 
-            for idx in range(self._num_laye
+            for idx in range(self._num_layer):
+                forward_cell_list.append(
+                    ConvRNNCell(self._in_channels, self._shape, self._num_filter, self._kernel_size))
+                backward_cell_list.append(
+                    ConvRNNCell(self._in_channels, self._shape, self._num_filter, self._kernel_size))
+            self._forward_cell_list = nn.ModuleList(forward_cell_list)
+            self._backward_cell_list = nn.ModuleList(backward_cell_list)
+        else:
+            cell_list = []
+            for idx in range(self._num_layer):
+                cell_list.append(ConvRNNCell(self._in_channels, self._shape, self._num_filter, self._kernel_size))
+            self._cell_list = nn.ModuleList(cell_list)
+
+    def forward(self, x, hidden_state):
+        curr_forward_x = x.transpose(0, 1)
+        curr_backward_x = x.transpose(0, 1)
+
+        forward_hidden_state, backward_hidden_state = hidden_state
+
+        seq_len = curr_forward_x.size(0)
+
+        if self._b
