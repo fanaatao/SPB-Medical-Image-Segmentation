@@ -68,4 +68,18 @@ class ConvRNN(nn.Module):
 
         seq_len = curr_forward_x.size(0)
 
-        if self._b
+        if self._bidirectional:
+            for idx_layer in range(self._num_layer):
+                layer_forward_hidden = forward_hidden_state[idx_layer]
+                layer_backward_hidden = backward_hidden_state[idx_layer]
+                inner_forward_output = []
+                inner_backward_output = []
+                for t in range(seq_len):
+                    # forward
+                    layer_forward_hidden = self._forward_cell_list[idx_layer](curr_forward_x[t, ...],
+                                                                              layer_forward_hidden)
+                    inner_forward_output.append(layer_forward_hidden)
+                    # backward
+                    layer_backward_hidden = self._backward_cell_list[idx_layer](curr_backward_x[seq_len - t - 1, ...],
+                                                                                layer_backward_hidden)
+                    inner_backward
