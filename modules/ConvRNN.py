@@ -103,3 +103,13 @@ class ConvRNN(nn.Module):
         """
         if self._bidirectional:
             forward_hidden_state = []
+            backward_hidden_state = []
+            for i in range(self._num_layer):
+                forward_hidden_state.append(self._forward_cell_list[i].init_hidden(batch_size))
+                backward_hidden_state.append(self._backward_cell_list[i].init_hidden(batch_size))
+            return tuple(forward_hidden_state), tuple(backward_hidden_state)
+        else:
+            hidden_state = []
+            for i in range(self._num_layer):
+                hidden_state.append(self._cell_list[i].init_hidden(batch_size))
+            return tuple(hidden_state)
