@@ -82,4 +82,24 @@ class ConvRNN(nn.Module):
                     # backward
                     layer_backward_hidden = self._backward_cell_list[idx_layer](curr_backward_x[seq_len - t - 1, ...],
                                                                                 layer_backward_hidden)
-                    inner_backward
+                    inner_backward_output.append(layer_backward_hidden)
+
+                curr_forward_x = torch.cat(inner_forward_output, 0).view(curr_forward_x.size(0),
+                                                                         *inner_forward_output[0].size())
+                curr_backward_x = torch.cat(inner_backward_output, 0).view(curr_backward_x.size(0),
+                                                                           *inner_backward_output[0].size())
+
+            curr_forward_x = curr_forward_x.transpose(0, 1)
+            curr_backward_x = curr_backward_x.transpose(0, 1)
+            return curr_forward_x, curr_backward_x
+        else:
+            raise Exception('No single direction implemnted!')
+
+    def init_hidden(self, batch_size):
+        """
+        init hidden state and cell state
+        :param batch_size: 
+        :return: 
+        """
+        if self._bidirectional:
+            forward_hidden_state = []
