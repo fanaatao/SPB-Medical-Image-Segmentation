@@ -50,4 +50,42 @@ def get_coordinate(img, gt_img, padding):
             break
 
     # from down to top
-    for i in range(gt_img.shape[0] - 1,
+    for i in range(gt_img.shape[0] - 1, -1, -1):
+        chip = gt_img[i]
+        if np.any(chip > 0):
+            x_2 = i
+            break
+
+    y_1 = -1
+    y_2 = -1
+    # from left to right
+    for i in range(gt_img.shape[1]):
+        chip = gt_img[:, i]
+        if np.any(chip > 0):
+            y_1 = i
+            break
+
+    # from right to left
+    for i in range(gt_img.shape[1] - 1, -1, -1):
+        chip = gt_img[:, i]
+        if np.any(chip > 0):
+            y_2 = i
+            break
+
+    coordinate = [x_1, x_2, y_1, y_2]
+
+    return (coordinate[0] + coordinate[1]) // 2, (coordinate[2] + coordinate[3]) // 2
+
+
+def _get_patch(img, gt_img, coord):
+    patch = img[coord[0] - 15: coord[0] + 17, coord[1] - 15:coord[1] + 17]
+    anno = gt_img[coord[0] - 15: coord[0] + 17, coord[1] - 15:coord[1] + 17]
+    return patch, anno
+
+
+def set_patch(result, counter_map,  patch, coord):
+    """
+    set patch in result
+    :param result: whole image result
+    :param patch: patch result
+ 
