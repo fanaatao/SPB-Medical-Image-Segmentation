@@ -119,3 +119,37 @@ def direction_extract(img, gt_img, coordinate, direction, length=15, stride=4):
     extract patches along specified angle
     :param img: 
     :param coordinate: 
+    :param direction: tuple for axis
+    :param length: 
+    :param stride: 
+    :return: two list patchs and annos. each list contains two np array sequence 
+    """
+    patches = []
+    annos = []
+    coord = []
+    coord.append(coordinate[0])
+    coord.append(coordinate[1])
+    # positive direction
+    pos_patches = []
+    pos_annos = []
+
+    for i in range(length):
+        coord[0] += direction[0] * stride
+        coord[1] += direction[1] * stride
+        patch, anno = _get_patch(img, gt_img, coord)
+        pos_patches.append(patch)
+        pos_annos.append(anno)
+    patches.append(np.array(pos_patches))
+    annos.append(np.array(pos_annos))
+
+    # negetive directioin
+    coord[0] = coordinate[0]
+    coord[1] = coordinate[1]
+    neg_patches = []
+    neg_annos = []
+
+    for i in range(length):
+        coord[0] -= direction[0] * stride
+        coord[1] -= direction[1] * stride
+        patch, anno = _get_patch(img, gt_img, coord)
+        neg_pat
