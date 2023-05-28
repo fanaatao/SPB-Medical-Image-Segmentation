@@ -88,4 +88,34 @@ def set_patch(result, counter_map,  patch, coord):
     set patch in result
     :param result: whole image result
     :param patch: patch result
- 
+    :param coord: coordinate of center point_move
+    :return: 
+    """
+    result[coord[0] - 15: coord[0] + 17, coord[1] - 15:coord[1] + 17] += patch
+    counter_map[coord[0] - 15: coord[0] + 17, coord[1] - 15:coord[1] + 17] += 1
+
+
+def _extract_patches(img, gt_img, coordinate, length=15, stride=4):
+    """
+    extract patch from raw images, for each sequence extract 10 patches with stride 4
+    :param img: 
+    :param gt_img:
+    :param coordinate: 
+    :param length: 
+    :param stride: 
+    :return: 
+    """
+    seq_patches = []
+    seq_annos = []
+    for direction in directions:
+        patches, annos = direction_extract(img, gt_img, coordinate, direction, length, stride)
+        seq_patches.extend(patches)
+        seq_annos.extend(annos)
+    return seq_patches, seq_annos
+
+
+def direction_extract(img, gt_img, coordinate, direction, length=15, stride=4):
+    """
+    extract patches along specified angle
+    :param img: 
+    :param coordinate: 
