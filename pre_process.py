@@ -179,4 +179,24 @@ def encode_records(data_path, out_dir,record_name):
         new_img[(PADDING_SHAPE[0] - HEIGHT) // 2:(PADDING_SHAPE[0] - HEIGHT) // 2 + 296,
         (PADDING_SHAPE[0] - WIDTH) // 2:(PADDING_SHAPE[0] - WIDTH) // 2 + 296] = img
         new_gt = np.zeros(PADDING_SHAPE, dtype=np.uint8)
-        new_gt[(PADDING_SHAPE[0] - HEIG
+        new_gt[(PADDING_SHAPE[0] - HEIGHT) // 2:(PADDING_SHAPE[0] - HEIGHT) // 2 + 296,
+        (PADDING_SHAPE[0] - WIDTH) // 2:(PADDING_SHAPE[0] - WIDTH) // 2 + 296] = gt_img
+
+        coordinate = get_coordinate(new_img, new_gt, 0)
+        imgs, annos = _extract_patches(new_img, new_gt, coordinate, length=seq_length, stride=extract_stride)
+
+        for seq_imgs, seq_annos in zip(imgs, annos):
+            count += 1
+            all_img_seqs.append(seq_imgs)
+            all_label_seqs.append(seq_annos)
+    all_img_seqs = np.array(all_img_seqs)
+    all_label_seqs = np.array(all_label_seqs)
+    print(all_label_seqs.shape)
+    np.save(out_dir + record_name + '_img.npy', all_img_seqs)
+    np.save(out_dir + record_name + '_label.npy', all_label_seqs)
+    print(count)
+
+
+if __name__ == '__main__':
+    # encode_records(train_data_dir, '/data/jinquan/data/', 'train')
+    encode_records(val_data_dir, '/data/jinquan/dat
