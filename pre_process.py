@@ -199,4 +199,4 @@ def encode_records(data_path, out_dir,record_name):
 
 if __name__ == '__main__':
     # encode_records(train_data_dir, '/data/jinquan/data/', 'train')
-    encode_records(val_data_dir, '/data/jinquan/dat
+    encode_records(val_data_dir, '/data/jinquan/data/', 'val')
