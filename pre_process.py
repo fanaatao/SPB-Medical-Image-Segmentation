@@ -152,4 +152,31 @@ def direction_extract(img, gt_img, coordinate, direction, length=15, stride=4):
         coord[0] -= direction[0] * stride
         coord[1] -= direction[1] * stride
         patch, anno = _get_patch(img, gt_img, coord)
-        neg_pat
+        neg_patches.append(patch)
+        neg_annos.append(anno)
+    patches.append(np.array(neg_patches))
+    annos.append(np.array(neg_annos))
+
+    return patches, annos
+
+
+def encode_records(data_path, out_dir,record_name):
+    count = 0
+
+    regx = data_path + '*.jpg'
+    names = glob(regx)
+    all_img_seqs = []
+    all_label_seqs = []
+    for name in names:
+        # print(name)
+        short_name = name.split('/')[-1]
+        short_name = short_name.split('.')[0]
+
+        print('process ' + short_name)
+        img, gt_img = load_img(data_path, short_name)
+        # essential padding before extracting
+        new_img = np.zeros(PADDING_SHAPE, dtype=np.uint8)
+        new_img[(PADDING_SHAPE[0] - HEIGHT) // 2:(PADDING_SHAPE[0] - HEIGHT) // 2 + 296,
+        (PADDING_SHAPE[0] - WIDTH) // 2:(PADDING_SHAPE[0] - WIDTH) // 2 + 296] = img
+        new_gt = np.zeros(PADDING_SHAPE, dtype=np.uint8)
+        new_gt[(PADDING_SHAPE[0] - HEIG
