@@ -65,4 +65,32 @@ class Logger(object):
     def flush(self):
         # this flush method is needed for python 3 compatibility.
         # this handles the flush command by doing nothing.
-        # you might want to specify some extra be
+        # you might want to specify some extra behavior here.
+        pass
+
+
+def write_list_to_file(strings, list_file):
+    with open(list_file, 'w') as f:
+        for s in strings:
+            f.write('%s\n'%s)
+    pass
+
+
+# https://stackoverflow.com/questions/1855095/how-to-create-a-zip-archive-of-a-directory
+def backup_project_as_zip(project_dir, zip_file):
+    shutil.make_archive(zip_file.replace('.zip',''), 'zip', project_dir)
+    pass
+
+
+# https://github.com/pytorch/examples/blob/master/imagenet/main.py ###############
+def adjust_learning_rate(optimizer, lr):
+    for param_group in optimizer.param_groups:
+        param_group['lr'] = lr
+
+
+def get_learning_rate(optimizer):
+    lr=[]
+    for param_group in optimizer.param_groups:
+       lr +=[ param_group['lr'] ]
+    return lr
+
